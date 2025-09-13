@@ -296,8 +296,19 @@ def debug_webhook():
             "timestamp": datetime.now().isoformat()
         }
         
+        # Test if TRMNL webhook is accessible
+        try:
+            test_response = requests.get(TRMNL_WEBHOOK_URL, timeout=5)
+            webhook_accessible = True
+            webhook_status = test_response.status_code
+        except Exception as e:
+            webhook_accessible = False
+            webhook_status = str(e)
+        
         return jsonify({
             "webhook_url": TRMNL_WEBHOOK_URL,
+            "webhook_accessible": webhook_accessible,
+            "webhook_status": webhook_status,
             "sample_payload": payload,
             "quotes_count": len(quotes),
             "refresh_interval_minutes": REFRESH_INTERVAL_MINUTES
@@ -324,10 +335,11 @@ def send_quote_to_trmnl():
             print(f"📤 Payload: {payload}")
             
             # Send to TRMNL webhook
+            print(f"🌐 Making request to: {TRMNL_WEBHOOK_URL}")
             response = requests.post(
                 TRMNL_WEBHOOK_URL,
                 json=payload,
-                timeout=10,
+                timeout=5,  # Reduced timeout
                 headers={'Content-Type': 'application/json'}
             )
             

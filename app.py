@@ -290,10 +290,12 @@ def debug_webhook():
     if quotes:
         quote = random.choice(quotes)
         payload = {
-            "text": quote['text'],
-            "author": quote['author'],
-            "source": quote['source'],
-            "timestamp": datetime.now().isoformat()
+            "merge_variables": {
+                "text": quote['text'],
+                "author": quote['author'],
+                "source": quote['source'],
+                "timestamp": datetime.now().isoformat()
+            }
         }
         
         # Test if TRMNL webhook is accessible
@@ -323,12 +325,14 @@ def send_quote_to_trmnl():
         if quotes:
             quote = random.choice(quotes)
             
-            # Prepare the data for TRMNL - try different payload formats
+            # Prepare the data for TRMNL - nested in merge_variables
             payload = {
-                "text": quote['text'],
-                "author": quote['author'],
-                "source": quote['source'],
-                "timestamp": datetime.now().isoformat()
+                "merge_variables": {
+                    "text": quote['text'],
+                    "author": quote['author'],
+                    "source": quote['source'],
+                    "timestamp": datetime.now().isoformat()
+                }
             }
             
             print(f"📤 Sending quote to TRMNL: {quote['text'][:50]}...")

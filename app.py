@@ -10,8 +10,9 @@ import re
 app = Flask(__name__)
 
 # Configuration
-QUOTES_FILE = 'quotes.json'
+QUOTES_FILE = os.getenv('QUOTES_FILE_PATH', 'quotes.json')
 DAILY_STOIC_URL = 'https://x.com/dailystoic'
+REFRESH_INTERVAL_MINUTES = int(os.getenv('REFRESH_INTERVAL_MINUTES', '30'))
 
 def load_quotes():
     """Load quotes from JSON file"""
@@ -152,7 +153,9 @@ def trmnl_markup():
             "source": "Default"
         }
     
-    return render_template('trmnl_markup.liquid', quote=quote)
+    return render_template('trmnl_markup.liquid', 
+                         quote=quote, 
+                         refresh_interval_minutes=REFRESH_INTERVAL_MINUTES)
 
 @app.route('/trmnl/install')
 def trmnl_install():
@@ -217,6 +220,18 @@ def trmnl_manage():
     """TRMNL plugin management page"""
     quotes = load_quotes()
     return render_template('manage.html', quotes=quotes)
+
+@app.route('/health')
+def health_check():
+    """Health check endpoint for monitoring"""
+    quotes = load_quotes()
+    return jsonify({
+        "status": "healthy",
+        "quotes_count": len(quotes),
+        "refresh_interval_minutes": REFRESH_INTERVAL_MINUTES,
+        "quotes_file": QUOTES_FILE,
+        "timestamp": datetime.now().isoformat()
+    })
 
 if __name__ == '__main__':
     # Initialize with some sample quotes if none exist

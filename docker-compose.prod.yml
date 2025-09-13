@@ -8,9 +8,11 @@ services:
     environment:
       - FLASK_ENV=production
       - FLASK_APP=app.py
+      - QUOTES_FILE_PATH=/app/quotes.json
+      - REFRESH_INTERVAL_MINUTES=30
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/quotes"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
       timeout: 10s
       retries: 3

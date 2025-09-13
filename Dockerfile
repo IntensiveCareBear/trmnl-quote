@@ -21,6 +21,9 @@ COPY . .
 # Create directory for quotes data
 RUN mkdir -p /app/data
 
+# Make startup script executable
+RUN chmod +x /app/start.sh
+
 # Expose port
 EXPOSE 5000
 
@@ -28,5 +31,5 @@ EXPOSE 5000
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
 
-# Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120", "app:app"]
+# Run the application with initialization
+CMD ["/app/start.sh"]

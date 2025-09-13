@@ -17,8 +17,15 @@ REFRESH_INTERVAL_MINUTES = int(os.getenv('REFRESH_INTERVAL_MINUTES', '30'))
 def load_quotes():
     """Load quotes from JSON file"""
     if os.path.exists(QUOTES_FILE):
-        with open(QUOTES_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        try:
+            with open(QUOTES_FILE, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                if not content:
+                    return []
+                return json.loads(content)
+        except (json.JSONDecodeError, ValueError):
+            # If file is corrupted or empty, return empty list
+            return []
     return []
 
 def save_quotes(quotes):
@@ -233,11 +240,19 @@ def health_check():
         "timestamp": datetime.now().isoformat()
     })
 
-if __name__ == '__main__':
-    # Initialize with some sample quotes if none exist
+def initialize_quotes():
+    """Initialize quotes file with sample data if empty"""
     quotes = load_quotes()
     if not quotes:
+        print("No quotes found, initializing with sample quotes...")
         sample_quotes = scrape_daily_stoic_quotes()
         save_quotes(sample_quotes)
+        print(f"Initialized with {len(sample_quotes)} sample quotes")
+    else:
+        print(f"Loaded {len(quotes)} existing quotes")
+
+if __name__ == '__main__':
+    # Initialize with some sample quotes if none exist
+    initialize_quotes()
     
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  trmnl-quote-plugin:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=app.py
+    volumes:
+      - ./data:/app/data
+      - ./quotes.json:/app/quotes.json
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/quotes"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

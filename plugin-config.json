@@ -1,0 +1,35 @@
+{
+  "name": "TRMNL Quote Plugin",
+  "description": "Display inspirational quotes from Daily Stoic and custom sources on your TRMNL device",
+  "version": "1.0.0",
+  "author": "TRMNL Community",
+  "icon": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9InVybCgjZ3JhZGllbnQwX2xpbmVhcl8xXzEpIi8+CjxwYXRoIGQ9Ik0yMCAyMEMyMCAxOC44OTU0IDIwLjg5NTQgMTggMjIgMThINDRDNDUuMTA0NiAxOCA0NiAxOC44OTU0IDQ2IDIwVjQ0QzQ2IDQ1LjEwNDYgNDUuMTA0NiA0NiA0NCA0NkgyMkMyMC44OTU0IDQ2IDIwIDQ1LjEwNDYgMjAgNDRWMjBaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMjggMjhIMzZWMzZIMjhWMjhaIiBmaWxsPSIjNjY3RUVBIi8+CjxwYXRoIGQ9Ik0yOCA0MEgzNlY0OEgyOFY0MFoiIGZpbGw9IiM2NjdFRUEiLz4KPHBhdGggZD0iTTQwIDI4SDQ4VjM2SDQwVjI4WiIgZmlsbD0iIzY2N0VFQSIvPgo8cGF0aCBkPSJNNDAgNDBINDhWNDhINDBWNDBaIiBmaWxsPSIjNjY3RUVBIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50MF9saW5lYXJfMV8xIiB4MT0iMCIgeTE9IjAiIHgyPSI2NCIgeTI9IjY0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiM2NjdFRUEiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzY0QkEyIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+",
+  "installation_url": "https://your-domain.com/trmnl/install",
+  "installation_success_webhook_url": "https://usetrmnl.com/api/custom_plugins/f4e72e60-c2d1-481d-b55a-11e3dcf33682",
+  "plugin_management_url": "https://your-domain.com/trmnl/manage",
+  "plugin_markup_url": "https://your-domain.com/trmnl/markup",
+  "uninstallation_webhook_url": "https://your-domain.com/trmnl/webhook/uninstall",
+  "device_support": [
+    {
+      "device": "TRMNL OG",
+      "resolution": "800x600",
+      "supported": true
+    }
+  ],
+  "features": [
+    "Daily Stoic quote scraping",
+    "Custom quote management",
+    "Beautiful gradient UI design",
+    "Auto-refresh functionality",
+    "Web-based management interface"
+  ],
+  "endpoints": {
+    "markup": "/trmnl/markup",
+    "install": "/trmnl/install",
+    "uninstall": "/trmnl/uninstall",
+    "manage": "/trmnl/manage",
+    "api_quotes": "/api/quotes",
+    "api_random_quote": "/api/quotes/random",
+    "api_scrape": "/api/scrape"
+  }
+}

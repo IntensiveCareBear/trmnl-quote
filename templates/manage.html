@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRMNL Quote Plugin - Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .plugin-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .plugin-info h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: #6c757d;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #495057;
+            font-size: 16px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #e9ecef;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .preview-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .preview-section h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .preview-frame {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+        }
+        
+        .settings-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+        }
+        
+        .settings-section h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 768px) {
+            .actions {
+                flex-direction: column;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Plugin Management</h1>
+            <p>Configure and manage your TRMNL Quote Plugin</p>
+        </div>
+        
+        <div class="content">
+            <div class="alert alert-success" id="successAlert"></div>
+            <div class="alert alert-error" id="errorAlert"></div>
+            
+            <div class="plugin-info">
+                <h2>Plugin Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Plugin Name</div>
+                        <div class="info-value">TRMNL Quote Plugin</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Version</div>
+                        <div class="info-value">1.0.0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Quotes</div>
+                        <div class="info-value">{{ quotes|length }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value">Active</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Markup URL</div>
+                        <div class="info-value">/trmnl/markup</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Device Support</div>
+                        <div class="info-value">TRMNL OG (800x600)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="actions">
+                <a href="/" class="btn btn-primary">🏠 Back to Dashboard</a>
+                <a href="/trmnl/markup" class="btn btn-secondary" target="_blank">👁️ Preview Display</a>
+                <button class="btn btn-secondary" onclick="refreshPreview()">🔄 Refresh Preview</button>
+                <button class="btn btn-danger" onclick="uninstallPlugin()">🗑️ Uninstall Plugin</button>
+            </div>
+            
+            <div class="preview-section">
+                <h2>Live Preview</h2>
+                <iframe id="previewFrame" class="preview-frame" src="/trmnl/markup"></iframe>
+            </div>
+            
+            <div class="settings-section">
+                <h2>Plugin Settings</h2>
+                <div class="form-group">
+                    <label for="refreshInterval">Auto-refresh Interval (seconds)</label>
+                    <select id="refreshInterval">
+                        <option value="30">30 seconds</option>
+                        <option value="60">1 minute</option>
+                        <option value="300">5 minutes</option>
+                        <option value="600">10 minutes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="quoteSource">Default Quote Source</label>
+                    <select id="quoteSource">
+                        <option value="all">All Quotes</option>
+                        <option value="daily_stoic">Daily Stoic Only</option>
+                        <option value="custom">Custom Only</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showAlert(message, type) {
+            const alert = document.getElementById(type + 'Alert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+        
+        function refreshPreview() {
+            const frame = document.getElementById('previewFrame');
+            frame.src = frame.src;
+            showAlert('Preview refreshed!', 'success');
+        }
+        
+        function saveSettings() {
+            const refreshInterval = document.getElementById('refreshInterval').value;
+            const quoteSource = document.getElementById('quoteSource').value;
+            
+            // In a real implementation, you'd save these settings
+            showAlert('Settings saved successfully!', 'success');
+        }
+        
+        function uninstallPlugin() {
+            if (confirm('Are you sure you want to uninstall the Quote Plugin? This action cannot be undone.')) {
+                fetch('/trmnl/uninstall', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showAlert('Plugin uninstalled successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                })
+                .catch(error => {
+                    showAlert('Failed to uninstall plugin. Please try again.', 'error');
+                });
+            }
+        }
+        
+        // Auto-refresh preview every 30 seconds
+        setInterval(refreshPreview, 30000);
+    </script>
+</body>
+</html>

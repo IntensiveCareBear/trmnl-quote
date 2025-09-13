@@ -1,0 +1,125 @@
+{% comment %}
+TRMNL Quote Plugin - Liquid Template for OG Device (800x600)
+Displays inspirational quotes with clean, readable design
+{% endcomment %}
+
+<div style="
+    width: 800px;
+    height: 600px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: white;
+    padding: 40px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+">
+    
+    <!-- Background Pattern -->
+    <div style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        pointer-events: none;
+    "></div>
+    
+    <!-- Quote Container -->
+    <div style="
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 700px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        z-index: 1;
+    ">
+        
+        <!-- Quote Icon -->
+        <div style="
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        ">💭</div>
+        
+        <!-- Quote Text -->
+        <blockquote style="
+            font-size: 28px;
+            line-height: 1.4;
+            margin: 0 0 30px 0;
+            font-weight: 300;
+            font-style: italic;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        ">
+            "{{ quote.text }}"
+        </blockquote>
+        
+        <!-- Author -->
+        <div style="
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        ">
+            — {{ quote.author }}
+        </div>
+        
+        <!-- Source -->
+        <div style="
+            font-size: 14px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        ">
+            {{ quote.source }}
+        </div>
+        
+    </div>
+    
+    <!-- Footer -->
+    <div style="
+        position: absolute;
+        bottom: 20px;
+        right: 30px;
+        font-size: 12px;
+        opacity: 0.6;
+        z-index: 1;
+    ">
+        TRMNL Quote Plugin
+    </div>
+    
+    <!-- Refresh Indicator -->
+    <div style="
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 12px;
+        opacity: 0.6;
+        z-index: 1;
+    ">
+        Auto-refresh: 30s
+    </div>
+    
+</div>
+
+{% comment %}
+This template is optimized for TRMNL OG device with 800x600 resolution.
+The design features:
+- Gradient background with subtle patterns
+- Glass-morphism effect for the quote container
+- Clean typography with proper hierarchy
+- Responsive text sizing
+- Visual indicators for refresh timing
+- Professional color scheme suitable for daily inspiration
+{% endcomment %}

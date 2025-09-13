@@ -150,19 +150,32 @@ def scrape_quotes():
 @app.route('/trmnl/markup')
 def trmnl_markup():
     """TRMNL plugin markup endpoint"""
-    quotes = load_quotes()
-    if quotes:
-        quote = random.choice(quotes)
-    else:
-        quote = {
-            "text": "No quotes available. Add some quotes to get started!",
-            "author": "System",
-            "source": "Default"
-        }
-    
-    return render_template('trmnl_markup.liquid', 
-                         quote=quote, 
-                         refresh_interval_minutes=REFRESH_INTERVAL_MINUTES)
+    try:
+        quotes = load_quotes()
+        if quotes:
+            quote = random.choice(quotes)
+        else:
+            quote = {
+                "text": "No quotes available. Add some quotes to get started!",
+                "author": "System",
+                "source": "Default"
+            }
+        
+        return render_template('trmnl_markup.html', 
+                             quote=quote, 
+                             refresh_interval_minutes=REFRESH_INTERVAL_MINUTES)
+    except Exception as e:
+        print(f"Error in trmnl_markup: {e}")
+        # Return a simple fallback response
+        return f"""
+        <div style="width: 800px; height: 600px; background: #667eea; color: white; display: flex; align-items: center; justify-content: center; font-family: Arial, sans-serif;">
+            <div style="text-align: center;">
+                <h1>TRMNL Quote Plugin</h1>
+                <p>Error loading quotes. Please check the application logs.</p>
+                <p>Refresh interval: {REFRESH_INTERVAL_MINUTES} minutes</p>
+            </div>
+        </div>
+        """
 
 @app.route('/trmnl/install')
 def trmnl_install():

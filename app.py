@@ -307,10 +307,21 @@ def debug_webhook():
             webhook_accessible = False
             webhook_status = str(e)
         
+        # Test actual webhook POST
+        try:
+            test_post = requests.post(TRMNL_WEBHOOK_URL, json=payload, timeout=10)
+            webhook_post_status = test_post.status_code
+            webhook_post_response = test_post.text
+        except Exception as e:
+            webhook_post_status = f"Error: {str(e)}"
+            webhook_post_response = "Failed to send test webhook"
+        
         return jsonify({
             "webhook_url": TRMNL_WEBHOOK_URL,
             "webhook_accessible": webhook_accessible,
             "webhook_status": webhook_status,
+            "webhook_post_status": webhook_post_status,
+            "webhook_post_response": webhook_post_response,
             "sample_payload": payload,
             "quotes_count": len(quotes),
             "refresh_interval_minutes": REFRESH_INTERVAL_MINUTES
@@ -340,10 +351,12 @@ def send_quote_to_trmnl():
             
             # Send to TRMNL webhook
             print(f"🌐 Making request to: {TRMNL_WEBHOOK_URL}")
+            print(f"🌐 Request payload: {json.dumps(payload, indent=2)}")
+            
             response = requests.post(
                 TRMNL_WEBHOOK_URL,
                 json=payload,
-                timeout=5,  # Reduced timeout
+                timeout=10,  # Increased timeout
                 headers={'Content-Type': 'application/json'}
             )
             

@@ -8,9 +8,6 @@ services:
     environment:
       - FLASK_ENV=production
       - FLASK_APP=app.py
-    volumes:
-      - quote_data:/app/data
-      - quote_quotes:/app/quotes.json
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/api/quotes"]
@@ -18,7 +15,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
-volumes:
-  quote_data:
-  quote_quotes:

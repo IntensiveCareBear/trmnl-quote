@@ -113,8 +113,8 @@ def add_quote():
     quote = {
         "id": len(load_quotes()) + 1,
         "text": data['text'],
-        "author": data.get('author', 'Unknown'),
-        "source": data.get('source', 'Custom'),
+        "author": data.get('author', 'Unknown') or 'Unknown',
+        "source": data.get('source', 'Custom') or 'Custom',
         "date_added": datetime.now().isoformat()
     }
     
@@ -251,6 +251,18 @@ def health_check():
         "refresh_interval_minutes": REFRESH_INTERVAL_MINUTES,
         "quotes_file": QUOTES_FILE,
         "timestamp": datetime.now().isoformat()
+    })
+
+@app.route('/debug/quotes')
+def debug_quotes():
+    """Debug endpoint to see all quotes with their sources"""
+    quotes = load_quotes()
+    return jsonify({
+        "total_quotes": len(quotes),
+        "quotes": quotes,
+        "sources": list(set([q.get('source', 'No Source') for q in quotes])),
+        "custom_count": len([q for q in quotes if q.get('source', 'Custom') != 'Daily Stoic']),
+        "daily_stoic_count": len([q for q in quotes if q.get('source', '') == 'Daily Stoic'])
     })
 
 def initialize_quotes():

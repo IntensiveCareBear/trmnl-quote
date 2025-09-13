@@ -293,7 +293,7 @@
                     <div class="stat-label">Daily Stoic Quotes</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">{{ quotes|selectattr('source', 'equalto', 'Custom')|list|length }}</div>
+                    <div class="stat-number">{{ quotes|rejectattr('source', 'equalto', 'Daily Stoic')|list|length }}</div>
                     <div class="stat-label">Custom Quotes</div>
                 </div>
             </div>

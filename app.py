@@ -283,6 +283,28 @@ def test_webhook():
             "message": f"Failed to send webhook: {str(e)}"
         }), 500
 
+@app.route('/api/webhook/debug', methods=['GET'])
+def debug_webhook():
+    """Debug webhook configuration and test"""
+    quotes = load_quotes()
+    if quotes:
+        quote = random.choice(quotes)
+        payload = {
+            "text": quote['text'],
+            "author": quote['author'],
+            "source": quote['source'],
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        return jsonify({
+            "webhook_url": TRMNL_WEBHOOK_URL,
+            "sample_payload": payload,
+            "quotes_count": len(quotes),
+            "refresh_interval_minutes": REFRESH_INTERVAL_MINUTES
+        })
+    else:
+        return jsonify({"error": "No quotes available"}), 404
+
 def send_quote_to_trmnl():
     """Send a random quote to TRMNL webhook"""
     try:
@@ -290,25 +312,32 @@ def send_quote_to_trmnl():
         if quotes:
             quote = random.choice(quotes)
             
-            # Prepare the data for TRMNL
+            # Prepare the data for TRMNL - try different payload formats
             payload = {
-                "quote_text": quote['text'],
+                "text": quote['text'],
                 "author": quote['author'],
                 "source": quote['source'],
                 "timestamp": datetime.now().isoformat()
             }
             
+            print(f"📤 Sending quote to TRMNL: {quote['text'][:50]}...")
+            print(f"📤 Payload: {payload}")
+            
             # Send to TRMNL webhook
             response = requests.post(
                 TRMNL_WEBHOOK_URL,
                 json=payload,
-                timeout=10
+                timeout=10,
+                headers={'Content-Type': 'application/json'}
             )
             
+            print(f"📥 TRMNL Response Status: {response.status_code}")
+            print(f"📥 TRMNL Response Body: {response.text}")
+            
             if response.status_code == 200:
-                print(f"✅ Quote sent to TRMNL: {quote['text'][:50]}...")
+                print(f"✅ Quote sent to TRMNL successfully!")
             else:
-                print(f"❌ Failed to send quote: {response.status_code}")
+                print(f"❌ Failed to send quote: {response.status_code} - {response.text}")
                 
     except Exception as e:
         print(f"❌ Error sending quote to TRMNL: {e}")

@@ -6,6 +6,8 @@ import os
 from datetime import datetime
 import random
 import re
+import threading
+import time
 
 app = Flask(__name__)
 
@@ -13,6 +15,7 @@ app = Flask(__name__)
 QUOTES_FILE = os.getenv('QUOTES_FILE_PATH', 'quotes.json')
 DAILY_STOIC_URL = 'https://x.com/dailystoic'
 REFRESH_INTERVAL_MINUTES = int(os.getenv('REFRESH_INTERVAL_MINUTES', '30'))
+TRMNL_WEBHOOK_URL = 'https://usetrmnl.com/api/custom_plugins/f4e72e60-c2d1-481d-b55a-11e3dcf33682'
 
 def load_quotes():
     """Load quotes from JSON file"""
@@ -265,6 +268,57 @@ def debug_quotes():
         "daily_stoic_count": len([q for q in quotes if q.get('source', '') == 'Daily Stoic'])
     })
 
+@app.route('/api/webhook/test', methods=['POST'])
+def test_webhook():
+    """Manually trigger webhook to TRMNL for testing"""
+    try:
+        send_quote_to_trmnl()
+        return jsonify({
+            "status": "success",
+            "message": "Webhook sent to TRMNL"
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": f"Failed to send webhook: {str(e)}"
+        }), 500
+
+def send_quote_to_trmnl():
+    """Send a random quote to TRMNL webhook"""
+    try:
+        quotes = load_quotes()
+        if quotes:
+            quote = random.choice(quotes)
+            
+            # Prepare the data for TRMNL
+            payload = {
+                "quote_text": quote['text'],
+                "author": quote['author'],
+                "source": quote['source'],
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            # Send to TRMNL webhook
+            response = requests.post(
+                TRMNL_WEBHOOK_URL,
+                json=payload,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                print(f"✅ Quote sent to TRMNL: {quote['text'][:50]}...")
+            else:
+                print(f"❌ Failed to send quote: {response.status_code}")
+                
+    except Exception as e:
+        print(f"❌ Error sending quote to TRMNL: {e}")
+
+def webhook_scheduler():
+    """Run webhook sender every 30 minutes"""
+    while True:
+        send_quote_to_trmnl()
+        time.sleep(REFRESH_INTERVAL_MINUTES * 60)  # Convert minutes to seconds
+
 def initialize_quotes():
     """Initialize quotes file with sample data if empty"""
     quotes = load_quotes()
@@ -279,5 +333,10 @@ def initialize_quotes():
 if __name__ == '__main__':
     # Initialize with some sample quotes if none exist
     initialize_quotes()
+    
+    # Start webhook scheduler in background thread
+    scheduler_thread = threading.Thread(target=webhook_scheduler, daemon=True)
+    scheduler_thread.start()
+    print(f"🚀 Started webhook scheduler - sending quotes every {REFRESH_INTERVAL_MINUTES} minutes")
     
     app.run(host='0.0.0.0', port=5000, debug=True)
